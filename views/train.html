@@ -40,6 +40,7 @@
   </div>
 
   <script>
+    const host = "https://kolznftaigateway-production.up.railway.app";
     const replicaId = localStorage.getItem("replicaId");
     const wallet = localStorage.getItem("wallet");
 
@@ -49,7 +50,7 @@
     }
 
     async function loadReplicaInfo() {
-        const res = await fetch("http://localhost:5000/api/v1/replicas");
+        const res = await fetch(`${host}/api/v1/replicas`);
         const data = await res.json();
         console.log(data);
         const replica = data.replicas.find(r => r.uuid === replicaId);
@@ -67,7 +68,7 @@
 
         const signature = localStorage.getItem("connectionSignature");
 
-        const res = await fetch("http://localhost:5000/api/v1/training", {
+        const res = await fetch(`${host}/api/v1/training`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ wallet, replicaId, message, signature, trainingData  })
