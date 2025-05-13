@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kolz NFT AI Interface</title>
+  <script src="/ethers.umd.min.js"></script>
+  <script src="/nft.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f8f9fa; }
+    h2 { color: #333; }
+    .section {
+      background: #fff;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+    input, button {
+      padding: 10px;
+      margin-top: 5px;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    pre { background: #eee; padding: 10px; overflow-x: auto; }
+    #wallet { margin-bottom: 10px; color: green; }
+  </style>
+</head>
+<body>
+
+  <h2>Kolz NFT AI Interface</h2>
+  <button onclick="connectWallet()">🔗 Connect Wallet</button>
+  <div id="wallet"></div>
+  
+  <div class="section">
+    <h3>🤖Replicas</h3>
+    <div id="replicaList">
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>🚀 Mint NFT</h3>
+    <input id="replicaId" placeholder="Replica ID" readonly />
+    <input id="avatarURI" placeholder="Avatar Image URI (https://...)" readonly />
+    <button onclick="mintNFT()">Mint NFT</button>
+  </div>
+
+  <div class="section">
+    <h3>🚀 Mint a self-owned NFT</h3>
+    <input id="selfOwnedReplicaName" placeholder="Replica Name"  />
+    <input id="replicaSlug" placeholder="Slug Name"  />
+    <input id="replicaDescription" placeholder="Replica Description"  />
+    <input id="replicaGreeting" placeholder="Replica Greeting"  />
+    <input id="selfOwnedAvatarURI" placeholder="Avatar Image URI (https://...)" value="https://sensay.io/assets/default-replica-profile.webp" readonly />
+    <button onclick="mintSelfOwnedNFT()">Mint self-owned NFT</button>
+  </div>
+
+  <div class="section">
+    <h3>📄 Get NFT Info</h3>
+    <input id="infoTokenId" placeholder="Token ID to view" />
+    <button onclick="getNFTInfo()">Get NFT Info</button>
+    <pre id="nftOutput"></pre>
+  </div>
+
+  <div class="section">
+    <h3>🔥 Burn NFT</h3>
+    <input id="burnTokenId" placeholder="Token ID to burn" />
+    <button onclick="burnNFT()">Burn NFT</button>
+  </div>
+</body>
+</html>

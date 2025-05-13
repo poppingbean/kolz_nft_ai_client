@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat with Replica</title>
+  <script src="/services/ethers.umd.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 20px; }
+    #chat-box {
+      background: white; padding: 20px; border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px; margin: auto;
+    }
+    #replica-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+    #replica-header img {
+      width: 50px; height: 50px; border-radius: 50%; border: 1px solid #ccc;
+    }
+    #chat-log {
+      height: 300px; overflow-y: auto;
+      border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;
+      background: #fafafa;
+    }
+    input, button {
+      width: 100%; padding: 10px; margin-top: 10px;
+      font-size: 16px;
+    }
+    button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+  <div id="chat-box">
+    <div id="replica-header">
+      <img id="replicaAvatar" src="" alt="Avatar">
+      <h2 id="replicaName">Chat with Replica</h2>
+    </div>
+    <div id="chat-log"></div>
+    <input id="messageInput" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    let wallet = localStorage.getItem("wallet");
+    let replicaId = localStorage.getItem("replicaId");
+
+    async function loadReplicaInfo() {
+      const res = await fetch("http://localhost:5000/api/v1/replicas");
+      const data = await res.json();
+      const replica = data.replicas.find(r => r.uuid === replicaId);
+      if (replica) {
+        document.getElementById("replicaName").innerText = replica.name;
+        document.getElementById("replicaAvatar").src = replica.profileImage;
+      }
+    }
+
+    async function sendMessage() {
+      const chatContent = document.getElementById("messageInput").value;
+      const message = localStorage.getItem("connectionMessage");
+      if (!wallet || !replicaId || !chatContent) return alert("Missing wallet, replicaId or chat message");
+
+      const signature = localStorage.getItem("connectionSignature");
+
+      const res = await fetch("http://localhost:5000/api/v1/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet, replicaId, message, signature, chatContent  })
+      });
+
+      const data = await res.json();
+      const chatLog = document.getElementById("chat-log");
+
+      if (res.ok) {
+        chatLog.innerHTML += `<div><strong>You:</strong> ${chatContent}</div>`;
+        chatLog.innerHTML += `<div><strong>Replica:</strong> ${data.content || JSON.stringify(data)}</div>`;
+      } else {
+        chatLog.innerHTML += `<div style='color:red;'>❌ ${data.error}</div>`;
+      }
+
+      document.getElementById("messageInput").value = "";
+    }
+
+    window.onload = loadReplicaInfo;
+  </script>
+</body>
+</html>

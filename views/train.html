@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Train Replica</title>
+  <script src="/ethers.umd.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f8f9fa; }
+    h2 { color: #333; }
+    .section {
+      background: #fff; padding: 20px;
+      border-radius: 8px; box-shadow: 0 0 8px rgba(0,0,0,0.05);
+      max-width: 600px; margin: 0 auto;
+    }
+    #replica-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+    #replica-header img {
+      width: 50px; height: 50px; border-radius: 50%; border: 1px solid #ccc;
+    }
+    textarea, button {
+      width: 100%; padding: 10px; margin-top: 10px;
+      font-size: 16px;
+    }
+    textarea { height: 200px; }
+    button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #218838; }
+    #status { margin-top: 15px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="section">
+    <div id="replica-header">
+      <img id="replicaAvatar" src="" alt="Avatar">
+      <h2 id="replicaName">Chat with Replica</h2>
+    </div>
+    <textarea id="trainingInput" placeholder="Enter training content here..."></textarea>
+    <button onclick="submitTraining()">Submit Training</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const replicaId = localStorage.getItem("replicaId");
+    const wallet = localStorage.getItem("wallet");
+
+    if (!replicaId || !wallet) {
+        alert("Missing replicaId or wallet");
+        window.location.href = "index.html";
+    }
+
+    async function loadReplicaInfo() {
+        const res = await fetch("http://localhost:5000/api/v1/replicas");
+        const data = await res.json();
+        console.log(data);
+        const replica = data.replicas.find(r => r.uuid === replicaId);
+        if (replica) {
+            console.log(replica);
+            document.getElementById("replicaName").innerText = replica.name;
+            document.getElementById("replicaAvatar").src = replica.profileImage;
+        }
+    }
+
+    async function submitTraining() {
+        const message = localStorage.getItem("connectionMessage");
+        const trainingData = document.getElementById("trainingInput").value;
+        if (!trainingData || !message) return alert("Please enter training content");
+
+        const signature = localStorage.getItem("connectionSignature");
+
+        const res = await fetch("http://localhost:5000/api/v1/training", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ wallet, replicaId, message, signature, trainingData  })
+        });
+
+        const data = await res.json();
+        const status = document.getElementById("status");
+
+        if (res.ok) {
+            status.innerText = "✅ Training submitted successfully.";
+        } else {
+            status.innerText = "❌ " + (data.error || "Training failed.");
+        }
+    }
+
+    window.onload = loadReplicaInfo;
+  </script>
+</body>
+</html>
