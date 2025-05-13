@@ -42,11 +42,12 @@
   </div>
 
   <script>
-    let wallet = localStorage.getItem("wallet");
-    let replicaId = localStorage.getItem("replicaId");
+    const wallet = localStorage.getItem("wallet");
+    const replicaId = localStorage.getItem("replicaId");
+    const host = "https://kolznftaigateway-production.up.railway.app";
 
     async function loadReplicaInfo() {
-      const res = await fetch("http://localhost:5000/api/v1/replicas");
+      const res = await fetch(`${host}/api/v1/replicas`);
       const data = await res.json();
       const replica = data.replicas.find(r => r.uuid === replicaId);
       if (replica) {
@@ -62,7 +63,7 @@
 
       const signature = localStorage.getItem("connectionSignature");
 
-      const res = await fetch("http://localhost:5000/api/v1/chat", {
+      const res = await fetch(`${host}/api/v1/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ wallet, replicaId, message, signature, chatContent  })
