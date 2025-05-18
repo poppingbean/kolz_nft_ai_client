@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Chat with Replica</title>
-  <script src="/services/ethers.umd.min.js"></script>
+  <script src="/ethers.umd.min.js"></script>
   <style>
     body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 20px; }
     #chat-box {
@@ -31,6 +31,7 @@
   </style>
 </head>
 <body>
+  <a href="/" style="position: absolute; top: 20px; left: 20px; text-decoration: none; background-color: #007bff; color: white; padding: 8px 12px; border-radius: 4px; font-size: 14px;">← Back</a>
   <div id="chat-box">
     <div id="replica-header">
       <img id="replicaAvatar" src="" alt="Avatar">
@@ -44,7 +45,7 @@
   <script>
     const wallet = localStorage.getItem("wallet");
     const replicaId = localStorage.getItem("replicaId");
-    const host = "https://kolznftgate.up.railway.app";
+    const host = "http://localhost:8080";
 
     async function loadReplicaInfo() {
       const res = await fetch(`${host}/api/v1/replicas`);
