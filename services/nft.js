@@ -1,6 +1,6 @@
 const contractAddress = "0xD46d9c77b91C801a9E644f779D95BC527AaBC7Cd";
 const kolzTokenAddress = "0x50ce4129ca261ccde4eb100c170843c2936bc11b";
-const host = "http://localhost:8080";
+const host = "https://kolzacademygate.up.railway.app";
 
 let provider, signer, contract, currentWallet;
 let selectedReplicaId = null;
