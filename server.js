@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 8082;
 app.use(express.static(path.join(__dirname, "views")));
 app.use(express.static(path.join(__dirname, "services")));
 app.use(express.static(path.join(__dirname, "styles")));
-app.use(express.static(path.join(__dirname, "views/images")));
+app.use(express.static(path.join(__dirname, "images")));
 
 app.get("/info", (req, res) => {
   res.sendFile(path.join(__dirname, "views/info.html"));
