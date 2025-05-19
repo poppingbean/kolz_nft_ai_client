@@ -8,6 +8,10 @@ app.use(express.static(path.join(__dirname, "views")));
 app.use(express.static(path.join(__dirname, "services")));
 app.use(express.static(path.join(__dirname, "styles")));
 
+app.get("/info", (req, res) => {
+  res.sendFile(path.join(__dirname, "views/info.html"));
+});
+
 app.get("/manage", (req, res) => {
   res.sendFile(path.join(__dirname, "views/contributionManage.html"));
 });
