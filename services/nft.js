@@ -85,14 +85,15 @@ async function getNFTInfo() {
 async function getReplicaIdsFromNFTs(wallet) {
   console.log(wallet);
   const nftContract = new ethers.Contract(contractAddress, abi, provider);
-  console.log(nftContract);
   const balance = await nftContract.balanceOf(wallet);
   console.log("balance:", balance);
   const ids = [];
   const onwerReplicasIds = [];
 
   for (let i = 0; i < balance; i++) {
+    console.log("Start checking owner and usable NFT Agents")
     const tokenId = await nftContract.tokenOfOwnerByIndex(wallet, i);
+    console.log("TokenId:", tokenId);
     const data = await nftContract.getNFTData(tokenId);
     console.log(data);
     if (data.accessibleAPIs.includes("ownerReplica")) {
