@@ -1,7 +1,6 @@
 const contractAddress = "0xD46d9c77b91C801a9E644f779D95BC527AaBC7Cd";
 const kolzTokenAddress = "0x50ce4129ca261ccde4eb100c170843c2936bc11b";
 const host = "https://kolzacademygate.up.railway.app";
-
 let provider, signer, contract, currentWallet;
 let selectedReplicaId = null;
 let selectedAvatarURI = null;
@@ -86,6 +85,7 @@ async function getNFTInfo() {
 async function getReplicaIdsFromNFTs(wallet) {
   console.log(wallet);
   const nftContract = new ethers.Contract(contractAddress, abi, provider);
+  console.log(nftContract);
   const balance = await nftContract.balanceOf(wallet);
   console.log("balance:", balance);
   const ids = [];
