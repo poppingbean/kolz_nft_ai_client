@@ -1,7 +1,7 @@
 const contractAddress = "0x4236b864974cA92d275A81cCcfEd7bebC0a9dfdb";
 const melaTokenAddress = "0xC95e6cb4b0E434A58b6E41a222212AF306c5CAd5";
 const contributionAddress = "0xC74FAB690cE4f31fB18aC4F1b89558be735bc3C9";
-const host = "http://localhost:8080";
+const host = "https://melagate.up.railway.app";
 const replicaId = localStorage.getItem("replicaId");
 const wallet = localStorage.getItem("wallet");
 
