@@ -1,6 +1,7 @@
-const contractAddress = "0xD46d9c77b91C801a9E644f779D95BC527AaBC7Cd";
-const kolzTokenAddress = "0x50ce4129ca261ccde4eb100c170843c2936bc11b";
-const host = "https://kolzacademygate.up.railway.app";
+const contractAddress = "0x4236b864974cA92d275A81cCcfEd7bebC0a9dfdb";
+const melaTokenAddress = "0xC95e6cb4b0E434A58b6E41a222212AF306c5CAd5";
+const contributionAddress = "0xC74FAB690cE4f31fB18aC4F1b89558be735bc3C9";
+const host = "http://localhost:8080";
 const replicaId = localStorage.getItem("replicaId");
 const wallet = localStorage.getItem("wallet");
 
@@ -18,6 +19,7 @@ async function loadContributions() {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       const contract = new ethers.Contract(contractAddress, abi, signer);
+      const contribution = new ethers.Contract(contributionAddress, contributionAbi, signer);
       const list = document.getElementById("contributionList");
       const content = document.getElementById("fullContent");
       list.innerHTML = "";
@@ -29,7 +31,7 @@ async function loadContributions() {
           const tokenId = await contract.tokenOfOwnerByIndex(wallet, i);
           const data = await contract.getNFTData(tokenId);
           if (data.replicaId === replicaId) {
-            const pendingContributions = await contract.getPendingContributions(tokenId);
+            const pendingContributions = await contribution.getPendingContributionsView(replicaId);
             pendingContributions.forEach((contrib, index) => {
               decodedText = decodeURIComponent((atob(contrib[1])));
               localStorage.setItem("decodedText", decodedText);
