@@ -109,11 +109,11 @@ async function getReplicas(wallet) {
     console.log("All replicas: ",allReplicas);
     // Chỉ gọi ownerReplicaIds nếu đã connect ví
     if (wallet) {
-      ownerReplicaIds = await getReplicaIdsFromNFTs(wallet, allReplicas);
+      let existsReplicaIds = await getReplicaIdsFromNFTs(wallet, allReplicas);
       console.log("Exists NFT replica IDs: ", ownerReplicaIds);
     }
-
-    renderReplicaList(allReplicas, ownerReplicaIds);
+    ownerReplicaIds = JSON.parse(localStorage.getItem("ownerReplicaIds") || "[]");
+    renderReplicaList(existsReplicaIds, ownerReplicaIds);
   } catch (err) {
     console.error("❌ Error loading replicas:", err.message);
   }
@@ -121,9 +121,7 @@ async function getReplicas(wallet) {
 
 async function refreshOwnedReplicasAndUpdateUI() {
   if (!currentWallet) return;
-
-  ownedReplicaIds = await getReplicaIdsFromNFTs(currentWallet);
-  renderReplicaList(allReplicas, ownedReplicaIds);
+  getReplicas(currentWallet);
 }
 
 function renderReplicaList(replicas, nftReplicaIds) {
