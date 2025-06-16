@@ -82,28 +82,24 @@ async function getNFTInfo() {
   }
 }
 
-async function getReplicaIdsFromNFTs(wallet) {
-  console.log(wallet);
-  console.log(abi);
-  const balance = await contract.balanceOf(wallet);
-  console.log("balance:", balance);
+async function getReplicaIdsFromNFTs(wallet, allReplicas) {
   const ids = [];
-  const onwerReplicasIds = [];
-
-  for (let i = 0; i < balance; i++) {
-    console.log("Start checking owner and usable NFT Agents")
-    const tokenId = await contract.tokenOfOwnerByIndex(wallet, i);
-    console.log("TokenId:", tokenId);
-    const data = await contract.getNFTData(tokenId);
+  const ownerReplicaIds = [];
+  
+  console.log("Start checking owner and usable NFT Agents");
+  for (const replica of allReplicas) {
+    const data = await contract.checkReplicaExists(replica.uuid);
     console.log(data);
-    if (data.accessibleAPIs.includes("ownerReplica")) {
-      onwerReplicasIds.push(data.replicaId);
-    }
-    if (data.replicaId) {
-      ids.push(data.replicaId);
+    if (data) {
+      ids.push(replica.uuid);
+      const hasReplica = await contract.checkHasReplica(wallet, replica.uuid);
+      console.log(`Replica ${replica.uuid} owned by ${wallet}:`, hasReplica);
+      if (hasReplica) {
+        ownerReplicaIds.push(replica.uuid);
+      }
     }
   }
-  localStorage.setItem("ownerReplicaIds", JSON.stringify(onwerReplicasIds));
+  localStorage.setItem("ownerReplicaIds", JSON.stringify(ownerReplicaIds));
   return ids;
 }
 
@@ -111,13 +107,13 @@ async function getReplicas(wallet) {
   try {
     allReplicas = await getAllReplicasFromServer();
     console.log("All replicas: ",allReplicas);
-    // Chỉ gọi ownedReplicaIds nếu đã connect ví
+    // Chỉ gọi ownerReplicaIds nếu đã connect ví
     if (wallet) {
-      ownedReplicaIds = await getReplicaIdsFromNFTs(wallet);
-      console.log("Owned replica IDs: ", ownedReplicaIds);
+      ownerReplicaIds = await getReplicaIdsFromNFTs(wallet, allReplicas);
+      console.log("Exists NFT replica IDs: ", ownerReplicaIds);
     }
 
-    renderReplicaList(allReplicas, ownedReplicaIds);
+    renderReplicaList(allReplicas, ownerReplicaIds);
   } catch (err) {
     console.error("❌ Error loading replicas:", err.message);
   }

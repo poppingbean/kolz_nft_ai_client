@@ -12,5 +12,17 @@
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.7"
-  }
+  },
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poppingbean/kolz_nft_ai_client.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/poppingbean/kolz_nft_ai_client/issues"
+  },
+  "homepage": "https://github.com/poppingbean/kolz_nft_ai_client#readme"
 }
