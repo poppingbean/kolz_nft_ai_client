@@ -107,6 +107,7 @@ async function getReplicas(wallet) {
   try {
     allReplicas = await getAllReplicasFromServer();
     let existsReplicaIds = [];
+    let filteredReplicas = [];
     if (!allReplicas || allReplicas.length === 0) {
       console.log("No agents available");
     }
@@ -114,8 +115,11 @@ async function getReplicas(wallet) {
       existsReplicaIds = await getReplicaIdsFromNFTs(wallet, allReplicas);
       console.log("Exists NFT replica IDs: ", existsReplicaIds);
     }
+    filteredReplicas = allReplicas.filter(replica =>
+        existsReplicaIds.includes(replica.uuid)
+      );
     ownerReplicaIds = JSON.parse(localStorage.getItem("ownerReplicaIds") || "[]");
-    renderReplicaList(existsReplicaIds, ownerReplicaIds);
+    renderReplicaList(filteredReplicas, ownerReplicaIds);
   } catch (err) {
     console.error("❌ Error loading replicas:", err.message);
   }
