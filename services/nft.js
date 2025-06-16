@@ -106,11 +106,13 @@ async function getReplicaIdsFromNFTs(wallet, allReplicas) {
 async function getReplicas(wallet) {
   try {
     allReplicas = await getAllReplicasFromServer();
-    console.log("All replicas: ",allReplicas);
-    // Chỉ gọi ownerReplicaIds nếu đã connect ví
+    let existsReplicaIds = [];
+    if (!allReplicas || allReplicas.length === 0) {
+      console.log("No agents available");
+    }
     if (wallet) {
-      let existsReplicaIds = await getReplicaIdsFromNFTs(wallet, allReplicas);
-      console.log("Exists NFT replica IDs: ", ownerReplicaIds);
+      existsReplicaIds = await getReplicaIdsFromNFTs(wallet, allReplicas);
+      console.log("Exists NFT replica IDs: ", existsReplicaIds);
     }
     ownerReplicaIds = JSON.parse(localStorage.getItem("ownerReplicaIds") || "[]");
     renderReplicaList(existsReplicaIds, ownerReplicaIds);
