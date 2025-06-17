@@ -102,7 +102,7 @@ async function verifyContribution(content) {
     const response = await fetch(`${host}/api/v1/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content })
+        body: JSON.stringify({ replicaId, content })
     });
 
     if (!response.ok) {
