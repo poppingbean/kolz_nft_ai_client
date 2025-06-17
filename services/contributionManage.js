@@ -14,7 +14,7 @@ async function loadReplicaInfo() {
         document.getElementById("replicaName").innerText = replica.name;
         document.getElementById("replicaAvatar").src = replica.profileImage;
       }
-    }
+}
 
 async function loadContributions() {
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -42,6 +42,7 @@ async function loadContributions() {
               card.onclick = () => {
                 document.querySelectorAll(".contribute-card").forEach(c => c.classList.remove("active"));
                 card.classList.add("active");
+                currentContribution = { tokenId, index, content: decodedText };
                 content.innerHTML = `
                   <div style='margin-bottom: 10px;'>${decodedText}</div>
                   <button class="approve" onclick="approveReject(${tokenId}, ${index}, true)">Approve</button>
