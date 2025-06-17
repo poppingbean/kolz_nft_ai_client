@@ -5,6 +5,7 @@ const host = "https://melagate.up.railway.app";
 const replicaId = localStorage.getItem("replicaId");
 const wallet = localStorage.getItem("wallet");
 
+let currentContribution = null;
 async function loadReplicaInfo() {
       const res = await fetch(`${host}/api/v1/replicas`);
       const data = await res.json();
@@ -45,6 +46,7 @@ async function loadContributions() {
                   <div style='margin-bottom: 10px;'>${decodedText}</div>
                   <button class="approve" onclick="approveReject(${tokenId}, ${index}, true)">Approve</button>
                   <button class="reject" onclick="approveReject(${tokenId}, ${index}, false)">Reject</button>
+                  <button class="verify" onclick="handleVerifyClick()" id="verifyButton">Verify</button>
                 `;
               };
               list.appendChild(card);
@@ -93,6 +95,42 @@ async function approveReject(tokenId, index, approved) {
         alert("Error: " + err.message);
       }
     }
+
+async function verifyContribution(content) {
+  try {
+    const response = await fetch(`${host}/api/v1/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+    });
+
+    if (!response.ok) {
+        throw new Error('Verify API failed');
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Verify error:', error);
+    return { verified: false, message: 'Verification failed' };
+  }
+}
+
+async function handleVerifyClick() {
+  if (!currentContribution) {
+    alert('Please select a contribution first.');
+    return;
+  }
+
+  const verifyResultDiv = document.getElementById('verifyResult');
+  verifyResultDiv.innerText = 'Verifying...';
+  verifyResultDiv.style.color = 'black';
+
+  const verifyResult = await verifyContribution(currentContribution.content);
+  verifyResultDiv.style.color = verifyResult.verified ? 'green' : 'red';
+  verifyResultDiv.innerText = verifyResult.message;
+}
+    
  window.onload = () => {
       loadReplicaInfo();
       loadContributions();
