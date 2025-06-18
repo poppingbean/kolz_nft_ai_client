@@ -38,11 +38,11 @@ async function loadContributions() {
               card.onclick = () => {
                 document.querySelectorAll(".contribute-card").forEach(c => c.classList.remove("active"));
                 card.classList.add("active");
-                currentContribution = { tokenId, index, content: decodedText };
+                currentContribution = { replicaId, index, content: decodedText };
                 content.innerHTML = `
                   <div style='margin-bottom: 10px;'>${decodedText}</div>
-                  <button class="approve" onclick="approveReject(${tokenId}, ${index}, true)">Approve</button>
-                  <button class="reject" onclick="approveReject(${tokenId}, ${index}, false)">Reject</button>
+                  <button class="approve" onclick="approveReject(${replicaId}, ${index}, true)">Approve</button>
+                  <button class="reject" onclick="approveReject(${replicaId}, ${index}, false)">Reject</button>
                   <button class="verify" onclick="handleVerifyClick()" id="verifyButton">Verify</button>
                 `;
               };
@@ -54,7 +54,7 @@ async function loadContributions() {
       }
 }
 
-async function approveReject(tokenId, index, approved) {
+async function approveReject(replicaId, index, approved) {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       const contribution = new ethers.Contract(contributionAddress, contributionAbi, signer);
