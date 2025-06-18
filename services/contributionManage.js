@@ -1,6 +1,6 @@
 const contractAddress = "0x4236b864974cA92d275A81cCcfEd7bebC0a9dfdb";
 const melaTokenAddress = "0xC95e6cb4b0E434A58b6E41a222212AF306c5CAd5";
-const contributionAddress = "0xC74FAB690cE4f31fB18aC4F1b89558be735bc3C9";
+const contributionAddress = "0xc5402a978d7A07534fEd54BFa60D4ffe60996b1A";
 const host = "https://melagate.up.railway.app";
 const replicaId = localStorage.getItem("replicaId");
 const wallet = localStorage.getItem("wallet");
@@ -25,13 +25,9 @@ async function loadContributions() {
       const content = document.getElementById("fullContent");
       list.innerHTML = "";
       content.innerText = "Select a contribution to view its content.";
-
       try {
-        const balance = await contract.balanceOf(wallet);
-        for (let i = 0; i < balance; i++) {
-          const tokenId = await contract.tokenOfOwnerByIndex(wallet, i);
-          const data = await contract.getNFTData(tokenId);
-          if (data.replicaId === replicaId) {
+        const hasReplica = await contract.checkHasReplica(signer, replicaId);
+        if( hasReplica ) {
             const pendingContributions = await contribution.getPendingContributionsView(replicaId);
             pendingContributions.forEach((contrib, index) => {
               decodedText = decodeURIComponent((atob(contrib[1])));
@@ -52,17 +48,16 @@ async function loadContributions() {
               };
               list.appendChild(card);
             });
-          }
         }
       } catch (err) {
         console.error("Error loading contributions:", err);
       }
-    }
+}
 
 async function approveReject(tokenId, index, approved) {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, abi, signer);
+      const contribution = new ethers.Contract(contributionAddress, contributionAbi, signer);
       try {
         if(approved) {
           const trainingData = localStorage.getItem("decodedText");
@@ -79,14 +74,14 @@ async function approveReject(tokenId, index, approved) {
           const status = document.getElementById("status");
 
           if (res.ok) {
-              const tx = await contract.approveRejectContribution(tokenId, index, approved);
+              const tx = await contribution.approveRejectContribution(replicaId, index, approved);
               await tx.wait();
               status.innerText = "✅ Contribute approved successfully. The contribution content has been trained";
           } else {
               status.innerText = "❌ " + (data.error || "Contribute failed or rejected");
           }
         } else {
-          const tx = await contract.approveRejectContribution(tokenId, index, approved);
+          const tx = await contribution.approveRejectContribution(replicaId, index, approved);
           await tx.wait();
           document.getElementById("status").innerText = "❌ Contribute rejected";
         }
